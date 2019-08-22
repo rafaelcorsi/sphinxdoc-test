@@ -1,0 +1,624 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="pt-br" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="pt-br" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Criando um projeto &mdash; Embarcados-Avançados Insper documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Embarcados-Avançados
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Criando um projeto</a></li>
+<li><a class="reference internal" href="#criando-o-toplevel">Criando o topLevel</a></li>
+<li><a class="reference internal" href="#configurando-o-toplevel">Configurando o topLevel</a></li>
+<li><a class="reference internal" href="#verificando">Verificando</a><ul>
+<li><a class="reference internal" href="#i-os">I/Os</a></li>
+<li><a class="reference internal" href="#pin-assigment">Pin Assigment</a><ul>
+<li><a class="reference internal" href="#leds">LEDs</a></li>
+<li><a class="reference internal" href="#clocks">Clocks</a></li>
+<li><a class="reference internal" href="#inserindo-no-quartus">Inserindo no Quartus</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#timing-requirements-not-met">Timing Requirements not met</a><ul>
+<li><a class="reference internal" href="#synopsys-design-constraints-file">Synopsys Design Constraints File</a></li>
+<li><a class="reference internal" href="#rtl-viewer">RTL Viewer</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gravando">Gravando</a></li>
+<li><a class="reference internal" href="#exercicios">Exercícios</a></li>
+<li><a class="reference internal" href="#entrega-1">Entrega 1</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Embarcados-Avançados</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Criando um projeto</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Tutorial-FPGA-RTL.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>Nessa primeira etapa do projeto iremos criar um hardware dedicado na
+FPGA para controlar os LEDs com base nos sinais de entradas dos botões.
+Iremos passar por todo o processo de desenvolvimento de um projeto em
+FPGA, desde sua criação até a validação no HW.</p>
+<p>Para seguir esse tutorial, é necessário:</p>
+<ul class="simple">
+<li><p><strong>Hardware:</strong> DE10-Standard e acessórios</p></li>
+<li><p><strong>Softwares:</strong> Quartus 18.01</p></li>
+<li><p><strong>Documentos:</strong>
+<a class="reference external" href="https://github.com/Insper/DE10-Standard-v.1.3.0-SystemCD/tree/master/Manual">DE10-Standard_User_manual.pdf</a></p></li>
+</ul>
+<p>Entrega no git:</p>
+<ul class="simple">
+<li><p>Pasta: <code class="docutils literal notranslate"><span class="pre">Tutorial-FPGA-RTL</span></code></p></li>
+</ul>
+<div class="section" id="criando-um-projeto">
+<h1>Criando um projeto<a class="headerlink" href="#criando-um-projeto" title="Permalink to this headline">¶</a></h1>
+<p>Primeiro, devemos criar um novo projeto no software Quartus.</p>
+<p>No Quartus: <code class="docutils literal notranslate"><span class="pre">File</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Project</span> <span class="pre">Wizard</span></code></p>
+<ul class="simple">
+<li><p><strong>Directory, Name, Top-Level Entity</strong></p>
+<ul>
+<li><p>Escolha o destino como sendo seu repositório. nomeio o projeto
+como <code class="docutils literal notranslate"><span class="pre">RTL_Blink_LED</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Project Type</strong></p>
+<ul>
+<li><p>Empty Project</p></li>
+</ul>
+</li>
+<li><p><strong>Add Files</strong></p>
+<ul>
+<li><p>Não vamos adicionar nenhum arquivo por enquanto.</p></li>
+</ul>
+</li>
+<li><p><strong>Family, Device &amp; Board Settings</strong></p>
+<ul>
+<li><p>Procure pela FPGA :</p>
+<ul>
+<li><p>Family: <code class="docutils literal notranslate"><span class="pre">Cyclone</span> <span class="pre">V</span></code></p></li>
+<li><p>Name: <code class="docutils literal notranslate"><span class="pre">5CSXFC6D6F31C6</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">ok</dt>
+<dd class="field-odd"><p>Finalize o Wizard</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Se precisar de outro material como referência, tem um tutorial da Terasic:
+<a class="reference external" href="https://github.com/Insper/DE10-Standard-v.1.3.0-SystemCD/tree/master/Manual">DE10-Standard_My_First_Fpga.pdf</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="criando-o-toplevel">
+<h1>Criando o topLevel<a class="headerlink" href="#criando-o-toplevel" title="Permalink to this headline">¶</a></h1>
+<p>TopLevel é o nome do módulo mais superior em desenvolvimento
+<a class="reference external" href="https://www.intel.com/content/www/us/en/programmable/support/support-resources/design-examples/design-software/vhdl/v_hier.html">hierárquico</a>
+onde, geralmente os sinais da entidade (in/out,…) serão mapeados a pinos
+do hardware (conexão com o mundo externo).</p>
+<p>Vamos adicionar um arquivo ao projeto recém criado:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">File</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">New</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">VHDL</span> <span class="pre">File</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">File</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">as</span></code> :arrow_right:</p>
+<ul>
+<li><p>name: <code class="docutils literal notranslate"><span class="pre">RTL_Blink_LED.vhd</span></code></p></li>
+</ul>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">ok</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</li>
+</ul>
+<p>Inicialize o arquivo com o conteúdo a seguir:</p>
+<div class="highlight-vhd notranslate"><div class="highlight"><pre><span></span>library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity RTL_Blink_LED is
+    port (
+        -- Gloabals
+        fpga_clk_50   : in  std_logic;
+
+        -- I/Os
+        fpga_led_pio  : out std_logic_vector(5 downto 0)
+    );
+end entity RTL_Blink_LED;
+
+architecture rtl of RTL_Blink_LED is
+
+-- signal
+signal blink : std_logic := &#39;0&#39;;
+
+begin
+
+  process(fpga_clk_50)
+      variable counter : integer range 0 to 25000000 := 0;
+      begin
+        if (rising_edge(fpga_clk_50)) then
+                  if (counter &lt; 10000000) then
+                      counter := counter + 1;
+                  else
+                      blink &lt;= not blink;
+                      counter := 0;
+                  end if;
+        end if;
+  end process;
+
+  fpga_led_pio(0) &lt;= blink;
+  fpga_led_pio(1) &lt;= blink;
+  fpga_led_pio(2) &lt;= blink;
+  fpga_led_pio(3) &lt;= blink;
+  fpga_led_pio(4) &lt;= blink;
+  fpga_led_pio(5) &lt;= blink;
+
+end rtl;
+</pre></div>
+</div>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Esse código poderia ser mais elegante, mas vamos deixar</p>
+</dd>
+</dl>
+<p>assim por ora.</p>
+</div></blockquote>
+</div>
+<div class="section" id="configurando-o-toplevel">
+<h1>Configurando o topLevel<a class="headerlink" href="#configurando-o-toplevel" title="Permalink to this headline">¶</a></h1>
+<p>No Quartus devemos dizer qual entidade é a topLevel, como o VHDL não
+define uma padrão para isso, qualquer entidade pode ser configurada como
+top. No quartus:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Project</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">as</span> <span class="pre">Top-Level</span> <span class="pre">Entity</span></code></p></li>
+</ul>
+<p>Esse comando irá configurar o arquivo atual como sendo o topLevel do
+projeto. Note que o Quartus atribui ao topLevel a entidade como sendo o
+nome do arquivo, se por algum motivo (que acontece) o nome do arquivo
+não for igual ao da entidade isso não irá funcionar.</p>
+</div>
+<div class="section" id="verificando">
+<h1>Verificando<a class="headerlink" href="#verificando" title="Permalink to this headline">¶</a></h1>
+<p>Vamos verificar se está tudo certo por enquanto realizando uma
+compilação completa no projeto. Para isso: <code class="docutils literal notranslate"><span class="pre">Processing</span></code> :arrow_right:
+<code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">Compilation</span></code>.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Aguarde !! as compilações de HDL podem demorar bastante</p>
+</dd>
+</dl>
+<p>tempo.</p>
+</div></blockquote>
+<div class="section" id="i-os">
+<h2>I/Os<a class="headerlink" href="#i-os" title="Permalink to this headline">¶</a></h2>
+<p>Lembre que o topLevel é a entidade que será mapeada com o mundo externo,
+nesse caso os sinais: <code class="docutils literal notranslate"><span class="pre">fpga_clk_50</span></code>; <code class="docutils literal notranslate"><span class="pre">fpga_led_pio</span></code>; devem ser
+conectados aos pinos da FPGA que estão conectados nesses dispositivos
+(clock de 50 MHz; Seis LEDs).</p>
+<p>Note o erro que o Quartus gerou quando mandamos ele compilar o projeto
+(<strong>“Show Critical Warnings Messages”</strong>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Critical</span> <span class="ne">Warning</span> <span class="p">(</span><span class="mi">169085</span><span class="p">):</span> <span class="n">No</span> <span class="n">exact</span> <span class="n">pin</span> <span class="n">location</span> <span class="n">assignment</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="k">for</span> <span class="mi">6</span> <span class="n">pins</span> <span class="n">of</span> <span class="mi">6</span> <span class="n">total</span> <span class="n">pins</span><span class="o">.</span> <span class="n">For</span> <span class="n">the</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">pins</span> <span class="n">please</span> <span class="n">refer</span>
+<span class="n">to</span> <span class="n">the</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="n">Assignment</span> <span class="n">Warnings</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">fitter</span> <span class="n">report</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="figure align-default" id="id1">
+<img alt="Error" src="_images/Tutorial-FPGA-RTL:error.png" />
+<p class="caption"><span class="caption-text">Error</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>Esse erro indica que do topLevel 6 sinais não foram mapeados para os
+pinos correspondentes.</p>
+</div>
+<div class="section" id="pin-assigment">
+<h2>Pin Assigment<a class="headerlink" href="#pin-assigment" title="Permalink to this headline">¶</a></h2>
+<p>Devemos indicar para a ferramenta quais são os pinos e qual padrão de
+sinal ele deve utilizar para cada um dos sinais definidos na entidade do
+topLevel.</p>
+<div class="section" id="leds">
+<h3>LEDs<a class="headerlink" href="#leds" title="Permalink to this headline">¶</a></h3>
+<p>No manual da placa (página 22( temos as definições de como os pinos da
+FPGA foram utilizados na placa:</p>
+<div class="figure align-default" id="id2">
+<img alt="LEDs" src="_images/Tutorial-FPGA-RTL:pins.png" />
+<p class="caption"><span class="caption-text">LEDs</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id3">
+<img alt="LEDs" src="_images/Tutorial-FPGA-RTL:pins2.png" />
+<p class="caption"><span class="caption-text">LEDs</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>Essa tabela define o sinal (que você pode dar qualquer nome), o pino na
+FPGA na qual está conectado, uma breve descrição e o nível elétrico de
+sinal na qual o pino deve ser configurado. Note que a placa
+DE10-Standard possui 10 LEDs conectados a FPGA.</p>
+</div>
+<div class="section" id="clocks">
+<h3>Clocks<a class="headerlink" href="#clocks" title="Permalink to this headline">¶</a></h3>
+<p>Também temos a definição do clock (sec. 3.5, manual da placa):</p>
+<div class="figure align-default" id="id4">
+<img alt="Clock" src="_images/Tutorial-FPGA-RTL:clock.png" />
+<p class="caption"><span class="caption-text">Clock</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>Note que existem 5 diferentes clocks que podem ser utilizado, os
+<code class="docutils literal notranslate"><span class="pre">FPGA_CLKx_50</span></code> são clocks de 50Mhz conectados a FPGA e os
+<code class="docutils literal notranslate"><span class="pre">HPS_CLKx_25</span></code> são sinais de clocks conectados exclusivamente ao ARM
+(HPS). Como estamos desenvolvendo na FPGA e não temos ainda nenhum
+requisito de performance, podemos escolher qualquer pino de clock
+<code class="docutils literal notranslate"><span class="pre">FPGA_CLKx_50</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Vamos usar (escolhido aleatório) o pino <code class="docutils literal notranslate"><span class="pre">CLOCK3_50</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">thinking</dt>
+<dd class="field-odd"><p>Tenha em mente que a FPGA trabalha com diferentes domínios</p>
+</dd>
+</dl>
+<p>de clock, quando o projeto possui temporalização crítica, essa
+escolha não pode ser casual.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="inserindo-no-quartus">
+<h3>Inserindo no Quartus<a class="headerlink" href="#inserindo-no-quartus" title="Permalink to this headline">¶</a></h3>
+<p>Agora que temos os pinos referentes aos sinais da FPGA, devemos inserir
+essa informação no Quartus. Existem duas maneiras de fazermos isso:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Pin</span> <span class="pre">Planner</span></code></p></li>
+</ol>
+<ul class="simple">
+<li><p>Ferramenta gráfica e interativa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Assigments</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Pin</span> <span class="pre">Planer</span></code></p></li>
+</ul>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Assigments</span> <span class="pre">Editor</span></code></p></li>
+</ol>
+<ul class="simple">
+<li><p>Maneira mais completa e com maior flexibilidade</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Assigments</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Assigments</span> <span class="pre">Editor</span></code></p></li>
+</ul>
+<p>Iremos utilizar a princípio o Pin Planner para inserir esses pinos, para
+isso: <code class="docutils literal notranslate"><span class="pre">Assignments</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Pin</span> <span class="pre">Planner</span></code>.</p>
+<p>A interface do <code class="docutils literal notranslate"><span class="pre">Pin</span> <span class="pre">Planner</span></code> exibe os pinos/ bancos disponíveis da
+FPGA para serem alocados aos sinais do topLevel. Note que a coluna
+<code class="docutils literal notranslate"><span class="pre">Fitter</span> <span class="pre">Location</span></code> já possui pinos alocados aos sinais, isso foi gerado
+automaticamente pelo Quartus na etapa de <code class="docutils literal notranslate"><span class="pre">Filter</span></code>, porém eles não
+correspondem aos pinos reais que desejamos utilizar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">bangbang</dt>
+<dd class="field-odd"><p>Edite a coluna <code class="docutils literal notranslate"><span class="pre">Location</span></code> utilizando como referência a</p>
+</dd>
+</dl>
+<p>tabela anterior. Note que o I/O Standard não reflete o definido no
+manual que é é o <code class="docutils literal notranslate"><span class="pre">3.3V</span> <span class="pre">CMOS</span></code>. Você deve alterar essa coluna de
+<code class="docutils literal notranslate"><span class="pre">2.5V</span> <span class="pre">CMOS</span> <span class="pre">(Default)</span></code> para <strong>``3.3-V LVTTL``</strong>.</p>
+<div class="figure align-default" id="id5">
+<img alt="Pin Planner" src="_images/Tutorial-FPGA-RTL:Assigments.png" />
+<p class="caption"><span class="caption-text">Pin Planner</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Normalmente atribuímos a FPGA uma flexibilidade lógica,</p>
+</dd>
+</dl>
+<p>mas note a flexibilidade que ela possui quanto a definição de nível
+de sinal de cada pino. Isso permite ao desenvolvedor de hardware
+inúmeras opções de uso e de novas configurações.</p>
+<dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Feche a ferramenta e abra o <code class="docutils literal notranslate"><span class="pre">Assignment</span> <span class="pre">Editor</span></code>:</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">Assignments</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Assignments</span> <span class="pre">Editor</span></code>. Note que as
+mesmas informações inseridas anteriormente estão nesse editor. Na
+verdade, todas as configurações da FPGA são exibidas no
+<code class="docutils literal notranslate"><span class="pre">Assignments</span> <span class="pre">Editor</span></code> e apenas algumas no <code class="docutils literal notranslate"><span class="pre">Pin</span> <span class="pre">Planner</span></code>.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">repeat</dt>
+<dd class="field-odd"><p>Recompile o projeto e note que não temos mais o erro referente</p>
+</dd>
+</dl>
+<p>a alocação dos pinos.</p>
+</div>
+</div>
+</div>
+<div class="section" id="timing-requirements-not-met">
+<h1>Timing Requirements not met<a class="headerlink" href="#timing-requirements-not-met" title="Permalink to this headline">¶</a></h1>
+<p>Note que após compilar o projeto ainda possuímos um erro <strong>critico</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Critical</span> <span class="ne">Warning</span> <span class="p">(</span><span class="mi">332012</span><span class="p">):</span> <span class="n">Synopsys</span> <span class="n">Design</span> <span class="n">Constraints</span> <span class="n">File</span> <span class="n">file</span> <span class="ow">not</span> <span class="n">found</span><span class="o">.</span>
+<span class="n">A</span> <span class="n">Synopsys</span> <span class="n">Design</span> <span class="n">Constraints</span> <span class="n">File</span> <span class="ow">is</span> <span class="n">required</span> <span class="n">by</span> <span class="n">the</span> <span class="n">TimeQuest</span> <span class="n">Timing</span>
+<span class="n">Analyzer</span> <span class="n">to</span> <span class="n">get</span> <span class="n">proper</span> <span class="n">timing</span> <span class="n">constraints</span><span class="o">.</span> <span class="n">Without</span> <span class="n">it</span><span class="p">,</span> <span class="n">the</span> <span class="n">Compiler</span> <span class="n">will</span>
+<span class="ow">not</span> <span class="n">properly</span> <span class="n">optimize</span> <span class="n">the</span> <span class="n">design</span><span class="o">.</span>
+
+<span class="n">Critical</span> <span class="ne">Warning</span> <span class="p">(</span><span class="mi">332148</span><span class="p">):</span> <span class="n">Timing</span> <span class="n">requirements</span> <span class="ow">not</span> <span class="n">met</span>
+
+<span class="n">Info</span> <span class="p">(</span><span class="mi">11105</span><span class="p">):</span> <span class="n">For</span> <span class="n">recommendations</span> <span class="n">on</span> <span class="n">closing</span> <span class="n">timing</span><span class="p">,</span>
+<span class="n">run</span> <span class="n">Report</span> <span class="n">Timing</span> <span class="n">Closure</span> <span class="n">Recommendations</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">TimeQuest</span> <span class="n">Timing</span> <span class="n">Analyzer</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Esse erro é referente a não termos indicado para o Quartus qual a
+frequência de operação do nosso sistema. Como a frequência não está
+definida a etapa de <code class="docutils literal notranslate"><span class="pre">Fitter</span> <span class="pre">and</span> <span class="pre">Assembler</span></code> não consegue otimizar o
+projeto corretamente, resultando nesse erro.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">point_right</dt>
+<dd class="field-odd"><p>Assembler aqui é diferente do assembler de um programa</p>
+</dd>
+</dl>
+<p>como <strong>C</strong>. De uma olhada nessa
+<a class="reference external" href="https://people.ece.cornell.edu/land/courses/ece5760/Quartus/Quartus_compile.html">referência</a>
+para maiores detalhes.</p>
+</div></blockquote>
+<div class="section" id="synopsys-design-constraints-file">
+<h2>Synopsys Design Constraints File<a class="headerlink" href="#synopsys-design-constraints-file" title="Permalink to this headline">¶</a></h2>
+<p>Devemos adicionar um novo arquivo ao projeto que irá indicar para a
+ferramenta quais são as condições de contorno do projeto. Para isso:
+<code class="docutils literal notranslate"><span class="pre">File</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">File</span></code> :arrow_right:
+<code class="docutils literal notranslate"><span class="pre">Synopsys</span> <span class="pre">Design</span> <span class="pre">Constraints</span> <span class="pre">File</span></code> :arrow_right: <code class="docutils literal notranslate"><span class="pre">Save</span> <span class="pre">As</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RTL_Blink_LED.sdc</span></code></p></li>
+</ul>
+<p>Adicione ao arquivo o seguinte conteúdo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 50MHz board input clock</span>
+<span class="n">create_clock</span> <span class="o">-</span><span class="n">period</span> <span class="mi">20</span> <span class="p">[</span><span class="n">get_ports</span> <span class="n">fpga_clk_50</span><span class="p">]</span>
+
+<span class="c1"># Automatically apply a generate clock on the output of phase-locked loops (PLLs)</span>
+<span class="n">derive_pll_clocks</span>
+</pre></div>
+</div>
+<p>Essas linhas indicam para a ferramenta que o sinal <code class="docutils literal notranslate"><span class="pre">fpga_clk_50</span></code> é um
+sinal de clock com frequência 50MHz (20 ns de período) e é para a
+inferir outros clocks automáticos (caso um PLL seja utilizado).</p>
+<p>1^:
+<a class="reference external" href="https://www.altera.com/support/support-resources/design-examples/design-software/timinganalyzer/exm-tq-basic-sdc-template.html">https://www.altera.com/support/support-resources/design-examples/design-software/timinganalyzer/exm-tq-basic-sdc-template.html</a></p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">repeat</dt>
+<dd class="field-odd"><p>Recompile o projeto e note que esse alerta some.</p>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="rtl-viewer">
+<h2>RTL Viewer<a class="headerlink" href="#rtl-viewer" title="Permalink to this headline">¶</a></h2>
+<p>RTL Viewer é uma maneira gráfica de verificar se o código em HDL foi
+interpretado corretamente pela ferramenta, e uma ótima maneira de
+verificar se a descrição do hardware está correta. Para isso vá em :
+<strong>Tools -&gt; NetList Viewers -&gt; RTL Viewer</strong>.</p>
+<div class="figure align-default" id="id6">
+<img alt="RTL" src="_images/Tutorial-FPGA-RTL:rtl.png" />
+<p class="caption"><span class="caption-text">RTL</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="gravando">
+<h1>Gravando<a class="headerlink" href="#gravando" title="Permalink to this headline">¶</a></h1>
+<p>Conecte a FPGA no Host via o conector USB Blaster</p>
+<p>Com o projeto compilando o Quartus gera um arquivo binário na pasta
+output_files com extensão <code class="docutils literal notranslate"><span class="pre">*.sof</span></code> . Esse arquivo é o que será
+carregado na FPGA para executar o projeto. Para isso abra : <strong>Tools -&gt;
+Programmmer</strong>.</p>
+<p>Nessa etapa você deve clicar em Auto Detect, essa etapa irá ler via JTAG
+todos os dispositivos que estão conectados no <strong>JTAG chain</strong>, você irá
+notar que irão aparecer dois dispositivos:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SOCVHPS</span></code>: ARM Cortex A7</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5CSXFC6D</span></code>: FPGA</p></li>
+</ul>
+<blockquote>
+<div><p>Talvez seja necessário configurar o Linux para reconhecer o JTAG,
+siga os passos em: <a class="reference external" href="https://github.com/Insper/Z01.1/wiki/Infraestrutura-Detalhada#configurando-o-usb-blaster">Configurando USB Blaster
+Linux</a>.</p>
+</div></blockquote>
+<p><img alt="image0" src="_images/Tutorial-FPGA-RTL:programming.png" /></p>
+</div>
+<div class="section" id="exercicios">
+<h1>Exercícios<a class="headerlink" href="#exercicios" title="Permalink to this headline">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">beginner</dt>
+<dd class="field-odd"><p>: Fácil</p>
+</dd>
+</dl>
+<ol class="arabic simple">
+<li><dl class="field-list simple">
+<dt class="field-odd">beginner</dt>
+<dd class="field-odd"><p>Faça os LEDs piscarem mais devagar</p>
+</dd>
+</dl>
+</li>
+<li><dl class="field-list simple">
+<dt class="field-odd">beginner</dt>
+<dd class="field-odd"><p>Adicione botões ao projeto e faça eles controlarem os LEDs</p>
+</dd>
+</dl>
+</li>
+<li><p>Faça as chaves controlarem a frequência na qual os LEDs piscam</p></li>
+<li><p>Adicione um PWM aos LEDs para controlar sua intensidade</p></li>
+</ol>
+</div>
+<div class="section" id="entrega-1">
+<h1>Entrega 1<a class="headerlink" href="#entrega-1" title="Permalink to this headline">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">bangbang</dt>
+<dd class="field-odd"><p>Siga para a <a class="reference external" href="Entrega-1">Entrega 1</a></p>
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, R. Corsi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
