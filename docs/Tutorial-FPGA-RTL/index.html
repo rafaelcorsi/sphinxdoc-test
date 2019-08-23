@@ -165,10 +165,8 @@
 </li>
 <li>🆗 Finalize o Wizard </li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title"><strong>Outra referência</strong></p>
-<p>Se precisar de outro material como referência, tem um tutorial da Terasic: <a href="https://github.com/Insper/DE10-Standard-v.1.3.0-SystemCD/tree/master/Manual">DE10-Standard_My_First_Fpga.pdf </a></p>
-</div>
+<details class="note"><summary><strong>Outra referência</strong></summary><p>Se precisar de outro material como referência, tem um tutorial da Terasic: <a href="https://github.com/Insper/DE10-Standard-v.1.3.0-SystemCD/tree/master/Manual">DE10-Standard_My_First_Fpga.pdf </a></p>
+</details>
 <h2 id="criando-o-toplevel">Criando o topLevel<a class="headerlink" href="#criando-o-toplevel" title="Permanent link">¶</a></h2>
 <p>TopLevel é o nome do módulo mais superior em desenvolvimento <a href="https://www.intel.com/content/www/us/en/programmable/support/support-resources/design-examples/design-software/vhdl/v_hier.html">hierárquico</a> onde, geralmente os sinais da entidade (in/out,...) serão mapeados a pinos do hardware (conexão com o mundo externo).</p>
 <p>Vamos adicionar um arquivo ao projeto recém criado:</p>
@@ -179,48 +177,8 @@
 <li>🆗</li>
 </ul>
 <p>Inicialize o arquivo com o conteúdo a seguir:</p>
-<div class="highlight"><pre><span></span><span class="k">library</span> <span class="nn">IEEE</span><span class="p">;</span>
-<span class="k">use</span> <span class="nn">IEEE.std_logic_1164.</span><span class="k">all</span><span class="p">;</span>
-
-<span class="k">entity</span> <span class="nc">RTL_Blink_LED</span> <span class="k">is</span>
-    <span class="k">port</span> <span class="p">(</span>
-        <span class="c1">-- Gloabals</span>
-        <span class="n">fpga_clk_50</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>        
-
-        <span class="c1">-- I/Os</span>
-        <span class="n">fpga_led_pio</span>  <span class="o">:</span> <span class="k">out</span> <span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">5</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="p">);</span>
-<span class="k">end</span> <span class="k">entity</span> <span class="nc">RTL_Blink_LED</span><span class="p">;</span>
-
-<span class="k">architecture</span> <span class="nc">rtl</span> <span class="k">of</span> <span class="nc">RTL_Blink_LED</span> <span class="k">is</span>
-
-<span class="c1">-- signal</span>
-<span class="k">signal</span> <span class="n">blink</span> <span class="o">:</span> <span class="kt">std_logic</span> <span class="o">:=</span> <span class="sc">'0'</span><span class="p">;</span>
-
-<span class="k">begin</span>
-
-  <span class="k">process</span><span class="p">(</span><span class="n">fpga_clk_50</span><span class="p">)</span> 
-      <span class="k">variable</span> <span class="n">counter</span> <span class="o">:</span> <span class="kt">integer</span> <span class="k">range</span> <span class="mi">0</span> <span class="k">to</span> <span class="mi">25000000</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="k">begin</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">rising_edge</span><span class="p">(</span><span class="n">fpga_clk_50</span><span class="p">))</span> <span class="k">then</span>
-                  <span class="k">if</span> <span class="p">(</span><span class="n">counter</span> <span class="o">&lt;</span> <span class="mi">10000000</span><span class="p">)</span> <span class="k">then</span>
-                      <span class="n">counter</span> <span class="o">:=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-                  <span class="k">else</span>
-                      <span class="n">blink</span> <span class="o">&lt;=</span> <span class="k">not</span> <span class="n">blink</span><span class="p">;</span>
-                      <span class="n">counter</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span>
-                  <span class="k">end</span> <span class="k">if</span><span class="p">;</span>
-        <span class="k">end</span> <span class="k">if</span><span class="p">;</span>
-  <span class="k">end</span> <span class="k">process</span><span class="p">;</span>
-
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-  <span class="n">fpga_led_pio</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">blink</span><span class="p">;</span>
-
-<span class="k">end</span> <span class="nc">rtl</span><span class="p">;</span>
-</pre></div>
+<details class="toplevel"><summary>Toplevel</summary></details>
+<p>ß</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>Esse código poderia ser mais elegante, mas vamos deixar assim por ora.</p>
